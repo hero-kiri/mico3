@@ -1,12 +1,23 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
-from .models import Doctor, Appointment, ContactUs, Email
+from .models import Doctor, Appointment, ContactUs, Email, Testimonial
 
 def index(request):
+    list_testimonials = Testimonial.objects.all()
+
+    if len(list_testimonials) >= 1:
+        first_testimonial = list_testimonials[0]
+        list_testimonials = list_testimonials[1:]
+    else:
+        first_testimonial = None
+        list_testimonials = None
+
     doctors = Doctor.objects.filter(is_active=True)
     context = {
-        'list_doctors': doctors
+        'list_doctors': doctors,
+        'first_testimonial': first_testimonial,
+        'list_testimonials': list_testimonials
     }
     return render(request, 'index.html', context=context)
 
@@ -48,7 +59,20 @@ def doctor(request):
     return render(request, 'doctor.html', context=context)
 
 def testimonials(request):
-    return render(request, 'testimonials.html')
+    list_testimonials = Testimonial.objects.all()
+
+    if len(list_testimonials) >= 1:
+        first_testimonial = list_testimonials[0]
+        list_testimonials = list_testimonials[1:]
+    else:
+        first_testimonial = None
+        list_testimonials = None
+
+    context = {
+        'first_testimonial': first_testimonial,
+        'list_testimonials': list_testimonials
+    }
+    return render(request, 'testimonials.html', context=context)
 
 def treatment(request):
     return render(request, 'treatment.html')
